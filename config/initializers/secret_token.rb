@@ -9,4 +9,20 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-SelectStudent::Application.config.secret_key_base = '04915462148a510ed3e1c0e5799572816131d948f48ef80fed2ef56e1c906bccfaf12837a4e43e1eeb5ca5d46862a31ab613fd78a2e0439f243d913a55766910'
+#SelectStudent::Application.config.secret_key_base = '04915462148a510ed3e1c0e5799572816131d948f48ef80fed2ef56e1c906bccfaf12837a4e43e1eeb5ca5d46862a31ab613fd78a2e0439f243d913a55766910'
+
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+SelectStudent::Application.config.secret_key_base = secure_token
